@@ -10,3 +10,4 @@ include_directories(
 add_subdirectory(SawDemo)
 #add_subdirectory(FreqAnalyser)
 #add_subdirectory(TestDatatypes)
+add_subdirectory (MidiChannelShift)
