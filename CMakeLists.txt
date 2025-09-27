@@ -159,6 +159,6 @@ endif()
 include(${gmpi_sdk_folder}/gmpi_plugin.cmake)
 
 add_subdirectory(plugins)
-add_subdirectory(plugins_c)
+#add_subdirectory(plugins_c)
 add_subdirectory(${GMPI_ADAPTORS} GMPI_Wrappers)
 
