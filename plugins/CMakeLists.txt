@@ -5,8 +5,8 @@ include_directories(
     ${gmpi_sdk_folder}/Core
     )
 
-add_subdirectory(Gain)
-add_subdirectory(GainGui)
+#add_subdirectory(Gain)
+#add_subdirectory(GainGui)
 add_subdirectory(SawDemo)
-add_subdirectory(FreqAnalyser)
-add_subdirectory(TestDatatypes)
+#add_subdirectory(FreqAnalyser)
+#add_subdirectory(TestDatatypes)
