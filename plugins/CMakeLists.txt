@@ -6,6 +6,7 @@ include_directories(
     )
 
 add_subdirectory(Gain)
+add_subdirectory(Gain_with_resource_xml)
 add_subdirectory(GainGui)
 add_subdirectory(SawDemo)
 add_subdirectory(FreqAnalyser)
