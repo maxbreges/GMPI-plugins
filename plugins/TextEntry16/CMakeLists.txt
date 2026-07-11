@@ -2,10 +2,6 @@ cmake_minimum_required(VERSION 3.30)
 
 project(TextEntry16)
 
-include_directories(
-    ${gmpi_sdk_folder}/_deps
-    )
-
 gmpi_plugin(
 	PROJECT_NAME ${PROJECT_NAME}
 	HAS_GUI
