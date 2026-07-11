@@ -1,0 +1,6 @@
+// Embeds the plugin's metadata XML as a Windows resource of type GMPXML.
+// The host locates it with FindResource(hInst, MAKEINTRESOURCE(1), L"GMPXML"),
+// so the resource ID must be 1 (see resource.h).
+#include "resource.h"
+
+IDR_GMPXML1             GMPXML                  "Gain_with_resource_xml.xml"

@@ -72,10 +72,10 @@ FetchContent_Declare(
   SOURCE_SUBDIR Core
 )
 FetchContent_MakeAvailable(gmpi)
-set(gmpi_sdk_folder ${gmpi_SOURCE_DIR})
+set(GMPI_SDK ${gmpi_SOURCE_DIR})
 else()
 message(STATUS "Using local GMPI folder")
-set(gmpi_sdk_folder ${GMPI_SDK_FOLDER_OVERRIDE})
+set(GMPI_SDK ${GMPI_SDK_FOLDER_OVERRIDE})
 endif()
 
 # GMPI-UI SDK
@@ -89,10 +89,10 @@ FetchContent_Declare(
   SOURCE_SUBDIR helpers
 )
 FetchContent_MakeAvailable(gmpi_ui)
-set(gmpi_ui_folder ${gmpi_ui_SOURCE_DIR})
+set(GMPI_UI_SDK ${gmpi_ui_SOURCE_DIR})
 else()
 message(STATUS "Using local GMPI-UI folder")
-set(gmpi_ui_folder ${GMPI_UI_FOLDER_OVERRIDE})
+set(GMPI_UI_SDK ${GMPI_UI_FOLDER_OVERRIDE})
 endif()
 
 # GMPI WRAPPERS
@@ -139,7 +139,7 @@ project(GMPI_Samples)
 
 enable_testing()
 
-set(CMAKE_CXX_STANDARD 20)
+set(CMAKE_CXX_STANDARD 23)
 
 add_definitions(-D_UNICODE)
 if (NOT CMAKE_BUILD_TYPE MATCHES Debug)
@@ -156,7 +156,7 @@ if(APPLE)
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -ffast-math")
 endif()
 
-include(${gmpi_sdk_folder}/gmpi_plugin.cmake)
+include(${GMPI_SDK}/gmpi_plugin.cmake)
 
 add_subdirectory(plugins)
 #add_subdirectory(plugins_c)
