@@ -7,8 +7,8 @@ include_directories(
 
 #add_subdirectory(Gain)
 #add_subdirectory(GainGui)
-#add_subdirectory(SawDemo)
-add_subdirectory(FreqAnalyser)
+add_subdirectory(SawDemo)
+#add_subdirectory(FreqAnalyser)
 #add_subdirectory(TestDatatypes)
 #add_subdirectory(TextEntry16)
 
