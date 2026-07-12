@@ -14,18 +14,6 @@ class TextEntry16 final : public PluginEditor
 	{
 		drawingHost->invalidateRect({});
 	}
-	void onSetTextColor()
-	{
-		drawingHost->invalidateRect({});
-	}
-	void onSetTopColor()
-	{
-		drawingHost->invalidateRect({});
-	}
-	void onSetBgColor()
-	{
-		drawingHost->invalidateRect({});
-	}
 
 	std::string fontFace;
 	void onSetFontFace()
@@ -39,47 +27,95 @@ class TextEntry16 final : public PluginEditor
 		fontSize = pinFontSize.value;
 	}
 
+	void onSetTextColor()
+	{
+		drawingHost->invalidateRect({});
+	}
+	void onSetTopColor()
+	{
+		drawingHost->invalidateRect({});
+	}
+	void onSetBgColor()
+	{
+		drawingHost->invalidateRect({});
+	}
+
 	int corner = 5;
 	void onSetCornerRadius()
 	{
 		corner = pinCornerRadius.value;
 	}
+	std::string hintUser;
+	void onSetHint()
+	{
+		hintUser = pinHint.value;
+	}
+
+	bool disableHint = false;
+	void onSetDisableHint()
+	{
+		disableHint = pinDisableHint.value;
+	}
 
  	Pin<std::string> pinText;
+	Pin<std::string> pinFontFace;
+	Pin<int> pinFontSize;
 	Pin<std::string> pinTextColor;
 	Pin<std::string> pinTopColor;
 	Pin<std::string> pinBgColor;
-	Pin<std::string> pinFontFace;
-	Pin<int> pinFontSize;
-	Pin<bool> pinMouseDown;
 	Pin<int> pinCornerRadius;
+	Pin<std::string> pinHint;
+	Pin<bool> pinDisableHint;
+	Pin<bool> pinMouseDown;
 	Pin<bool> pinHover;
-	Pin<int> pinDebug;
+	Pin<bool> pinEntryOpen;
 
 public:
 	TextEntry16()
 	{
 		pinText.onUpdate = [this](PinBase*) { onSetText(); };
+		pinFontFace.onUpdate = [this](PinBase*) { onSetFontFace(); };
+		pinFontSize.onUpdate = [this](PinBase*) { onSetFontSize(); };
 		pinTextColor.onUpdate = [this](PinBase*) { onSetTextColor(); };
 		pinTopColor.onUpdate = [this](PinBase*) { onSetTopColor(); };
 		pinBgColor.onUpdate = [this](PinBase*) { onSetBgColor(); };
-		pinFontFace.onUpdate = [this](PinBase*) { onSetFontFace(); };
-		pinFontSize.onUpdate = [this](PinBase*) { onSetFontSize(); };
-		pinMouseDown;
 		pinCornerRadius.onUpdate = [this](PinBase*) { onSetCornerRadius(); };
+		pinHint.onUpdate = [this](PinBase*) { onSetHint(); };
+		pinDisableHint.onUpdate = [this](PinBase*) { onSetDisableHint(); };
+		pinMouseDown;
 		pinHover;
-		pinDebug;
+		pinEntryOpen;
 
 		callback.onSuccess = [this](const std::string& text)
 			{
 				pinText = text;
+				pinEntryOpen = false;
 			};
+	}
+
+	gmpi::ReturnCode getToolTip(gmpi::drawing::Point point, gmpi::api::IString* returnString) override
+	{
+		if (!disableHint)
+		{
+			if (hintUser.empty())
+			{
+				// pinHint = pinHintAuto;//<Pin name="HintAuto" datatype="string" parameterId="0" parameterField="ShortName"/>
+			}
+			else
+			{
+				pinHint = hintUser;
+			}
+			auto utf8String = pinHint.value;
+			returnString->setData(utf8String.data(), (int32_t)utf8String.size());
+			return ReturnCode::Ok;
+		}
+		else {}
+		return ReturnCode::Unhandled;
 	}
 
 	gmpi::ReturnCode setHover(bool isMouseOverMe) override
 	{
 		pinHover = isMouseOverMe;
-
 		return gmpi::ReturnCode::Unhandled;
 	}
 
@@ -87,7 +123,7 @@ public:
 	{
 		if ((flags & static_cast<int32_t>(gmpi::api::PointerFlags::FirstButton)) == 0)
 			return ReturnCode::Unhandled;					
-
+		pinMouseDown = true;
 		inputHost->setCapture();
 		return ReturnCode::Ok;
 	}
@@ -103,6 +139,7 @@ public:
 		pinMouseDown = false;
 
 		dialogHost->createTextEdit(&bounds, unknown.put());
+		pinEntryOpen = true;
 		auto textEdit = unknown.as<gmpi::api::ITextEdit>();
 
 		if (textEdit)
@@ -244,15 +281,17 @@ auto r = Register<TextEntry16>::withXml(R"XML(
 <Plugin id="TextEntry16" name="Text Entry16" category="mx/Sub-Controls">
     <GUI graphicsApi="GmpiUi">
         <Pin name="Text" datatype="string" default="Text"/>
+		<Pin name="Font Face" datatype="string" default="Times New Roman" isMinimised="true"/>
+		<Pin name="Font Size" datatype="int" default="20" isMinimised="true"/>
 		<Pin name="Text Color" datatype="string" default="ff000000"/>
 		<Pin name="Top Color" datatype="string" default="ffff9900"/>
 		<Pin name="Bg Color" datatype="string" default="ffffffff"/>
-		<Pin name="Font Face" datatype="string" default="Times New Roman" isMinimised="true"/>
-		<Pin name="Font Size" datatype="int" default="20" isMinimised="true"/>
-		<Pin name="Mouse Down" datatype="bool"/>
 		<Pin name="Corner" datatype="int" default="5" isMinimised="true"/>
+		<Pin name="Hint" datatype="string" isMinimised="true"/>
+		<Pin name="Disable Hint" datatype="bool"/>
+		<Pin name="Mouse Down" datatype="bool"/>
 		<Pin name="Mouse Over" datatype="bool" direction="out"/>
-		<Pin name="Debug" datatype="int" direction="out" private="true"/>
+		<Pin name="Entry Open" datatype="bool" direction="out"/>
     </GUI>
 </Plugin>
 )XML");
