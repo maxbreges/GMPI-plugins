@@ -40,7 +40,7 @@ class TextEntry16 final : public PluginEditor
 		drawingHost->invalidateRect({});
 	}
 
-	int corner = 5;
+	float corner = 5;
 	void onSetCornerRadius()
 	{
 		corner = pinCornerRadius.value;
@@ -57,21 +57,41 @@ class TextEntry16 final : public PluginEditor
 		disableHint = pinDisableHint.value;
 	}
 
+	void onSetMenuItems()
+	{
+		
+	}
+
  	Pin<std::string> pinText;
 	Pin<std::string> pinFontFace;
 	Pin<int> pinFontSize;
 	Pin<std::string> pinTextColor;
 	Pin<std::string> pinTopColor;
 	Pin<std::string> pinBgColor;
-	Pin<int> pinCornerRadius;
+	Pin<float> pinCornerRadius;
 	Pin<std::string> pinHint;
 	Pin<bool> pinDisableHint;
 	Pin<bool> pinMouseDown;
 	Pin<bool> pinHover;
 	Pin<bool> pinEntryOpen;
+//	Pin<std::string> pinMenuItems;
+//	Pin<int> pinMenuSelection;
 
 public:
 	TextEntry16()
+		: callback(
+			// onSuccess lambda
+			[this](const std::string& text)
+			{
+				pinText = text;
+				pinEntryOpen = false; // Close the entry on success
+			},
+			// onCancel lambda
+			[this](void)
+			{
+				pinEntryOpen = false; // Close the entry on cancel
+			}
+		)
 	{
 		pinText.onUpdate = [this](PinBase*) { onSetText(); };
 		pinFontFace.onUpdate = [this](PinBase*) { onSetFontFace(); };
@@ -85,12 +105,9 @@ public:
 		pinMouseDown;
 		pinHover;
 		pinEntryOpen;
+	//	pinMenuItems.onUpdate = [this](PinBase*) { onSetMenuItems(); };
+	//	pinMenuSelection;
 
-		callback.onSuccess = [this](const std::string& text)
-			{
-				pinText = text;
-				pinEntryOpen = false;
-			};
 	}
 
 	gmpi::ReturnCode getToolTip(gmpi::drawing::Point point, gmpi::api::IString* returnString) override
@@ -145,7 +162,7 @@ public:
 		if (textEdit)
 		{
 			textEdit->setText(pinText.value.c_str());
-			textEdit->showAsync(&callback);
+			textEdit->showAsync(&callback); //
 		}
 
 		return ReturnCode::Ok;
@@ -162,13 +179,13 @@ public:
 
 		//an advanced rectangle with the gradient				
 		auto r = bounds;
-		int width = r.right - r.left;
-		int height = r.bottom - r.top;
+		float width = r.right - r.left;
+		float height = r.bottom - r.top;
 
 		auto topCol = pinBgColor;
 		auto botCol = topCol;
 
-		int radius = corner;
+		float radius = corner;
 
 		radius = (std::min)(radius, width / 2);
 		radius = (std::min)(radius, height / 2);
@@ -235,7 +252,6 @@ public:
 		Point point1(1, 0);
 		Point point2(1, height);
 
-
 		Gradientstop gradientStops[]
 		{
 		{ 0.0f, colorFromHexString(pinTopColor.value)},
@@ -286,12 +302,18 @@ auto r = Register<TextEntry16>::withXml(R"XML(
 		<Pin name="Text Color" datatype="string" default="ff000000"/>
 		<Pin name="Top Color" datatype="string" default="ffff9900"/>
 		<Pin name="Bg Color" datatype="string" default="ffffffff"/>
-		<Pin name="Corner" datatype="int" default="5" isMinimised="true"/>
+		<Pin name="Corner Radius" datatype="float" default="5" isMinimised="false"/>
 		<Pin name="Hint" datatype="string" isMinimised="true"/>
 		<Pin name="Disable Hint" datatype="bool"/>
 		<Pin name="Mouse Down" datatype="bool"/>
 		<Pin name="Mouse Over" datatype="bool" direction="out"/>
 		<Pin name="Entry Open" datatype="bool" direction="out"/>
+		<Pin name="Top Left" datatype="bool" default="true" isMinimised="true"/>
+		<Pin name="Top Right" datatype="bool" default="true" isMinimised="true"/>
+		<Pin name="Bottom Left" datatype="bool" default="true" isMinimised="true"/>
+		<Pin name="Bottom Right" datatype="bool" default="true" isMinimised="true"/>
+		<Pin name="Menu Items" datatype="string" private="true"/>
+		<Pin name="Menu Selection" datatype="int" private="true"/>
     </GUI>
 </Plugin>
 )XML");
