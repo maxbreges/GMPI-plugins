@@ -58,8 +58,7 @@ class TextEntry16 final : public PluginEditor
 	}
 
 	void onSetMenuItems()
-	{
-		
+	{		
 	}
 
  	Pin<std::string> pinText;
@@ -74,6 +73,10 @@ class TextEntry16 final : public PluginEditor
 	Pin<bool> pinMouseDown;
 	Pin<bool> pinHover;
 	Pin<bool> pinEntryOpen;
+	Pin<bool> pinTopLeft;
+	Pin<bool> pinTopRight;
+	Pin<bool> pinBottomRight;
+	Pin<bool> pinBottomLeft;
 //	Pin<std::string> pinMenuItems;
 //	Pin<int> pinMenuSelection;
 
@@ -196,7 +199,7 @@ public:
 		// define a corner 
 		const float rightAngle = 3.14159265358979323846 * 0.5f;
 		// top left
-		if (5)
+		if (pinTopLeft.value)
 		{
 			sink.beginFigure(Point(0, radius), FigureBegin::Filled);
 			ArcSegment as(Point(radius, 0), Size(radius, radius), rightAngle);
@@ -208,7 +211,7 @@ public:
 		}
 
 		// top right
-		if (5)
+		if (pinTopRight.value)
 		{
 			sink.addLine(Point(width - radius, 0));
 			//		sink.AddArc(Corner, 270, 90);
@@ -221,7 +224,7 @@ public:
 		}
 
 		// bottom right
-		if (5)
+		if (pinBottomRight.value)
 		{
 			sink.addLine(Point(width, height - radius));
 			//		sink.AddArc(Corner, 0, 90);
@@ -234,7 +237,7 @@ public:
 		}
 
 		// bottom left
-		if (5)
+		if (pinBottomLeft.value)
 		{
 			sink.addLine(Point(radius, height));
 			ArcSegment as(Point(0, height - radius), Size(radius, radius), rightAngle);
@@ -302,16 +305,16 @@ auto r = Register<TextEntry16>::withXml(R"XML(
 		<Pin name="Text Color" datatype="string" default="ff000000"/>
 		<Pin name="Top Color" datatype="string" default="ffff9900"/>
 		<Pin name="Bg Color" datatype="string" default="ffffffff"/>
-		<Pin name="Corner Radius" datatype="float" default="5" isMinimised="false"/>
+		<Pin name="Corner Radius" datatype="float" default="5" isMinimised="true"/>
 		<Pin name="Hint" datatype="string" isMinimised="true"/>
 		<Pin name="Disable Hint" datatype="bool"/>
 		<Pin name="Mouse Down" datatype="bool"/>
 		<Pin name="Mouse Over" datatype="bool" direction="out"/>
 		<Pin name="Entry Open" datatype="bool" direction="out"/>
-		<Pin name="Top Left" datatype="bool" default="true" isMinimised="true"/>
-		<Pin name="Top Right" datatype="bool" default="true" isMinimised="true"/>
-		<Pin name="Bottom Left" datatype="bool" default="true" isMinimised="true"/>
-		<Pin name="Bottom Right" datatype="bool" default="true" isMinimised="true"/>
+		<Pin name="Top Left" datatype="bool" default="1" isMinimised="true"/>
+		<Pin name="Top Right" datatype="bool" default="1" isMinimised="true"/>
+		<Pin name="Bottom Right" datatype="bool" default="1" isMinimised="true"/>
+		<Pin name="Bottom Left" datatype="bool" default="1" isMinimised="true"/>
 		<Pin name="Menu Items" datatype="string" private="true"/>
 		<Pin name="Menu Selection" datatype="int" private="true"/>
     </GUI>
