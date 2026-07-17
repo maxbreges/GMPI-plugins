@@ -1,7 +1,7 @@
 #pragma once 
 #include "helpers/GmpiPluginEditor.h"
 #include "helpers/ContextMenuHelper.h"
-#include "it_enum_list.h"
+#include "./deps_/it_enum_list.h"
 
 using namespace gmpi;
 using namespace gmpi::editor;
@@ -197,7 +197,8 @@ public:
 				pinMenuSelection = -1;
 			};
 
-		for (auto& item : it_enum_list2(pinMenuItems.value))
+		auto enum_list = it_enum_list2(pinMenuItems.value);
+		for (auto& item : enum_list)
 		{
 			switch (menuItemType(item.text))
 			{
