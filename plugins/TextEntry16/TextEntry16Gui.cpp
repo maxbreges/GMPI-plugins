@@ -197,8 +197,7 @@ public:
 				pinMenuSelection = -1;
 			};
 
-		auto enum_list = it_enum_list2(pinMenuItems.value);
-		for (auto& item : enum_list)
+		for (const auto& item : it_enum_list2(pinMenuItems.value))
 		{
 			switch (menuItemType(item.text))
 			{
