@@ -1,7 +1,7 @@
 #pragma once 
 #include "helpers/GmpiPluginEditor.h"
 #include "helpers/ContextMenuHelper.h"
-#include "../se_sdk3/it_enum_list.h"
+#include "it_enum_list.h"
 
 using namespace gmpi;
 using namespace gmpi::editor;
