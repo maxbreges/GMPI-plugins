@@ -1,5 +1,7 @@
 #pragma once 
 #include "helpers/GmpiPluginEditor.h"
+#include "helpers/ContextMenuHelper.h"
+#include "../shared/it_enum_list.h"
 
 using namespace gmpi;
 using namespace gmpi::editor;
@@ -57,10 +59,6 @@ class TextEntry16 final : public PluginEditor
 		disableHint = pinDisableHint.value;
 	}
 
-	void onSetMenuItems()
-	{		
-	}
-
  	Pin<std::string> pinText;
 	Pin<std::string> pinFontFace;
 	Pin<int> pinFontSize;
@@ -77,8 +75,8 @@ class TextEntry16 final : public PluginEditor
 	Pin<bool> pinTopRight;
 	Pin<bool> pinBottomRight;
 	Pin<bool> pinBottomLeft;
-//	Pin<std::string> pinMenuItems;
-//	Pin<int> pinMenuSelection;
+	Pin<std::string> pinMenuItems;
+	Pin<int> pinMenuSelection;
 
 public:
 	TextEntry16()
@@ -105,12 +103,11 @@ public:
 		pinCornerRadius.onUpdate = [this](PinBase*) { onSetCornerRadius(); };
 		pinHint.onUpdate = [this](PinBase*) { onSetHint(); };
 		pinDisableHint.onUpdate = [this](PinBase*) { onSetDisableHint(); };
-		pinMouseDown;
-		pinHover;
-		pinEntryOpen;
-	//	pinMenuItems.onUpdate = [this](PinBase*) { onSetMenuItems(); };
-	//	pinMenuSelection;
-
+		//pinMouseDown;
+		//pinHover;
+		//pinEntryOpen;
+		//pinMenuItems;
+		//pinMenuSelection;
 	}
 
 	gmpi::ReturnCode getToolTip(gmpi::drawing::Point point, gmpi::api::IString* returnString) override
@@ -137,6 +134,87 @@ public:
 	{
 		pinHover = isMouseOverMe;
 		return gmpi::ReturnCode::Unhandled;
+	}
+
+	private:
+		enum class MenuItemType { Normal, Separator, Break, SubMenu, SubMenuEnd };
+
+		static MenuItemType menuItemType(std::string_view text)
+		{
+			text = trimSpaces(text);
+			if (text.size() < 4) return MenuItemType::Normal;
+			for (size_t i = 1; i < 4; ++i)
+				if (text[i] != text[0]) return MenuItemType::Normal;
+			switch (text[0])
+			{
+			case '-': return MenuItemType::Separator;
+			case '|': return MenuItemType::Break;
+			case '>': return MenuItemType::SubMenu;
+			case '<': return MenuItemType::SubMenuEnd;
+			default:  return MenuItemType::Normal;
+			}
+		}
+
+		static std::string_view trimSpaces(std::string_view text)
+		{
+			while (!text.empty() && text.front() == ' ') text.remove_prefix(1);
+			while (!text.empty() && text.back() == ' ') text.remove_suffix(1);
+			return text;
+		}
+
+		static std::string menuText(std::string_view text)
+		{
+			text = trimSpaces(text);
+			if (text.size() >= 4)
+			{
+				const auto t = menuItemType(text);
+				if (t == MenuItemType::SubMenu || t == MenuItemType::SubMenuEnd)
+				{
+					text.remove_prefix(4);
+					text = trimSpaces(text);
+				}
+			}
+			return std::string(text);
+		}
+	// Override method
+	gmpi::ReturnCode populateContextMenu(gmpi::drawing::Point /*point*/, gmpi::api::IUnknown* contextMenuItemsSink) override
+	{
+		if (pinMenuItems.value.empty())
+			return ReturnCode::Unhandled;
+
+		gmpi::shared_ptr<gmpi::api::IUnknown> unknown;
+		unknown = contextMenuItemsSink;
+		auto sink = unknown.as<gmpi::api::IContextItemSink>();
+		if (!sink)
+			return ReturnCode::Fail;
+
+		ContextMenuHelper menu(sink.get());
+
+		menu.currentCallback =
+			[this](int32_t selectedId)
+			{
+				pinMenuSelection = selectedId;
+				pinMenuSelection = -1;
+			};
+
+		for (const auto& item : it_enum_list2(pinMenuItems.value))
+		{
+			switch (menuItemType(item.text))
+			{
+			case MenuItemType::Separator:  menu.addSeparator();                         break;
+			case MenuItemType::SubMenu:    menu.beginSubMenu(menuText(item.text).c_str()); break;
+			case MenuItemType::SubMenuEnd: menu.endSubMenu();                            break;
+			case MenuItemType::Break:                                                    break;
+			case MenuItemType::Normal:     menu.addItem(menuText(item.text).c_str(), item.id); break;
+			}
+		}
+		return ReturnCode::Ok;
+	}
+
+	void onContextMenu(int32_t selection)
+	{
+		pinMenuSelection = selection;
+		// Additional handling if needed
 	}
 
 	ReturnCode onPointerDown(Point point, int32_t flags) override
@@ -315,8 +393,8 @@ auto r = Register<TextEntry16>::withXml(R"XML(
 		<Pin name="Top Right" datatype="bool" default="1" isMinimised="true"/>
 		<Pin name="Bottom Right" datatype="bool" default="1" isMinimised="true"/>
 		<Pin name="Bottom Left" datatype="bool" default="1" isMinimised="true"/>
-		<Pin name="Menu Items" datatype="string" private="true"/>
-		<Pin name="Menu Selection" datatype="int" private="true"/>
+		<Pin name="Menu Items" datatype="string" private="false"/>
+		<Pin name="Menu Selection" datatype="int" private="false"/>
     </GUI>
 </Plugin>
 )XML");
