@@ -7,8 +7,8 @@ gmpi_plugin(
 	HAS_GUI
 	SOURCE_FILES
 	  TextEntry16Gui.cpp
-        it_enum_list.h
-        it_enum_list.cpp
+        ${se_shared_folder}/it_enum_list.h
+        ${se_shared_folder}/it_enum_list.cpp
 )
 
 
