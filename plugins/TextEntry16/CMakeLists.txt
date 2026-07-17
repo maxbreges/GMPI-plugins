@@ -11,3 +11,7 @@ gmpi_plugin(
 
 
 #https://github.com/JeffMcClintock/SynthEditLib/tree/main/modules
+#adding 	${se_sdk_folder}/it_enum_list.h
+#	        ${se_sdk_folder}/it_enum_list.cpp
+# did not work so I had to add "it_enum_list.h" and "it_enum_list.cpp" to deps_ sub-directory
+# and do #include "./deps_/it_enum_list.h" in the .cpp
