@@ -40,7 +40,7 @@ class FileDialog16Gui final : public PluginEditorNoGui
     }
 
     void releaseFileDialog(gmpi::api::IUnknown* dialog) {
-        dialogHost->release(dialog);
+        dialogHost->release();
     }
 
  	Pin<bool> pinTrigger;
