@@ -27,7 +27,7 @@ class FileDialog16Gui final : public PluginEditorNoGui
                 //dialogHost->release(dialog);
                 };
         }
-        m_prev_trigger = pinTrigger;
+        m_prev_trigger = pinTrigger.value;
     }
 
     void onSetFilePathOut()
