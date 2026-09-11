@@ -10,7 +10,7 @@ class FileDialog16Gui final : public PluginEditorNoGui
 
     void onSetTrigger()
     {
-        if (!pinTrigger && m_prev_trigger == true)
+        if (!pinMouseDown.value && m_prev_trigger == true)
         {
             gmpi::api::IUnknown* dialog = nullptr;
             dialogHost->createFileDialog(static_cast<int32_t>(gmpi::api::FileDialogType::Open), &dialog);
