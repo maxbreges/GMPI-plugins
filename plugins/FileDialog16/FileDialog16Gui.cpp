@@ -10,21 +10,21 @@ class FileDialog16Gui final : public PluginEditorNoGui
 
     void onSetTrigger()
     {
-        if (!pinMouseDown.value && m_prev_trigger == true)
+        if (!pinTrigger.value && m_prev_trigger == true)
         {
             gmpi::api::IUnknown* dialog = nullptr;
-            dialogHost->createFileDialog(static_cast<int32_t>(gmpi::api::FileDialogType::Open), &dialog);
+            dialogHost->createFileDialog(static_cast<int32_t>(gmpi::api::FileDialogType::Save), &dialog);
             // Set the callback function for when the dialog is closed
             onDialogClosed = [dialog](gmpi::api::IUnknown* result) {
                 // Get the file path from the dialog
                 gmpi::api::IUnknown* filePath = nullptr;
-                dialog->getSelectedFilePath(result, &filePath);
+                //dialog->setInitialFilename(result, &filePath);
                 // Call onSetFilePathOut to notify the editor of the new file path
-                onSetFilePathOut(filePath);
+                //onSetFilePathOut(filePath);
                 // Release the dialog's reference to the file path
-                dialog->release(filePath);
+                //dialog->release(filePath);
                 // Release the dialog
-                dialogHost->release(dialog);
+                //dialogHost->release(dialog);
                 };
         }
     }
