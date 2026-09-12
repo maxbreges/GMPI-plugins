@@ -8,6 +8,5 @@ include_directories(
 #add_subdirectory(Gain)
 #add_subdirectory(GainGui)
 #add_subdirectory(TextEntry16)
-add_subdirectory(FileDialog16)
 
 
