@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<PluginList>
+	<Plugin id="My DAM_MidiKeyboard" name="DAM Keyboard MIDI" category="Controls">
+	<Parameters>
+		<Parameter id="0" datatype="blob" ignorePatchChange="true" persistant="false" />
+	</Parameters>
+	<Audio>
+		<Pin name="MIDI In" datatype="midi" direction="in" />
+		<Pin name="Channel In" datatype="enum" metadata="All,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16"/>
+		<Pin name="Channel Out" datatype="enum" metadata="1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16"/>
+		<Pin name="MIDI Out" datatype="midi" direction="out" />
+		<Pin name="Disp Out" datatype="blob" direction="out" private="true" parameterId="0" />
+	</Audio>
+	<GUI graphicsApi="GmpiGui">
+		<Pin name="Disp In" datatype="blob" private="true" parameterId="0" />
+	</GUI>
+</Plugin>
+	</PluginList>
+
+
