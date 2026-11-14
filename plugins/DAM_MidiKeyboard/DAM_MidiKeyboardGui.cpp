@@ -1,7 +1,7 @@
-#include "../se_sdk3/mp_sdk_gui2.h"
-#include "../se_sdk3/Drawing.h"
-#include "../shared/unicode_conversion.h"
-#include "../se_sdk3/mp_midi.h"
+#include "./se_sdk3/mp_sdk_gui2.h"
+#include "./se_sdk3/Drawing.h"
+#include "./shared/unicode_conversion.h"
+#include "./se_sdk3/mp_midi.h"
 
 #include <array>
 

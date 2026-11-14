@@ -1,5 +1,5 @@
-#include "../se_sdk3/mp_sdk_audio.h"
-#include "../se_sdk3/mp_midi.h"
+#include "./se_sdk3/mp_sdk_audio.h"
+#include "./se_sdk3/mp_midi.h"
 #include <bitset>
 
 using namespace gmpi;
